@@ -5,5 +5,23 @@ USE employees
 
 CREATE TABLE department(
     id int UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) UNIQUE NOT NULL
+    name VARCHAR(30) UNIQUE NOT NULL
 );
+
+CREATE TABLE role (
+    id INT UNSIGNED AUTO_INCREMENT ,
+    title VARCHAR(30) UNIQUE NOT NULL,
+    department_id INT UNSIGNED NOT NULL,
+    salary INT UNSIGNED NOT NULL,
+    manager VARCHAR(30),
+
+);
+
+CREATE TABLE employee (
+    ID INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name_first VARCHAR(30) UNIQUE NOT NULL,
+    name_last VARCHAR(30) UNIQUE NOT NULL,
+    department INT UNIQUE,
+    manager_ID INT UNSIGNED
+    role_id INT UNSIGNED NOT NULL,
+)
