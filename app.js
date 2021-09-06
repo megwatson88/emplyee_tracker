@@ -1,8 +1,8 @@
 const { response } = require('express');
 const express = require('express');
 const inquirer = require('inquirer');
-const mysql = require('mysql');
-const Connection = require('mysql2/typings/mysql/lib/Connection');
+// const mysql2 = require('mysql2');
+// const Connection = require('mysql2/typings/mysql/lib/Connection');
 
 
 
@@ -36,27 +36,120 @@ const startApp = () => {
                 message: "Welcome to your employee tracking system! Would you like to VIEW, ADD or UPDATE an employee?",
                 choices: ["VIEW", "ADD", "UPDATE", "END"]
             }
+        ])
+        .then((response) => {
 
-                .then((response) => {
+            //if chooses view 
+            if (response.chooseView === "VIEW") {
+                inquirer
+                    .prompt({
+                        name: "pickedView",
+                        type: "list",
+                        choices: ["Departments", "Roles", "Employees"]
+                    })
 
-                    //if chooses view 
-                    if (response.chooseView === "VIEW") {
-                        inquirer
-                            .prompt ({
-                                name: "pickedView",
-                                type: "list",
-                                choices: ["Departments", "Roles", "Employees"]
+                    //departments
+                    .then((response) => {
+                        if (response.chooseView === "Departments") {
+                            connection.Query("SELECT * FROM department", (err, res) => {
+                                if (err) throw err;
+                                console.log(res);
+                                startApp()
+                            });
+                        }
+                    });
+
+                //roles 
+                if ((response.chooseView === "Roles")) {
+                    connection.Query("SELECT * FROM roles", (err, res) => {
+                        if (err) throw err;
+                        console.log(res);
+                        startApp()
+                    })
+                };
+
+                //employees
+                if (response.chooseView === "Employees") {
+                    connection.Query("SELECT * FROM employees", (err, res) => {
+                        if (err) throw err;
+                        console.log(res);
+                        startApp()
+                    });
+                };
+            };
+        })
+    //chooses add
+    if (response.chooseAction === "ADD") {
+        inquirer
+            .prompt(
+                {
+                    name: "chooseAdd",
+                    type: "list",
+                    message: "Would you like to add to Employee, Departments or Roles?",
+                    choices: ["Employee", "Roles", "Departments"]
+                }
+            ).then((response) => {
+                if (response.chooseAdd === "Departments") {
+                    inquirer
+                        .prompt({
+                            type: "input",
+                            message: "Enter Department Name",
+                            name: "departmentName"
+                        })
+                        .then((response)=>{
+                            connection.query(`Insert into department VALUE ${response.departmentName}`, (err, res)=> {
+                                if (err) throw err;
+                                connection.query("SELECT * FROM departent", (err, res)=> {
+                                    if (err) throw err;
+                                    startApp()
+                                })
                             })
-                            .then((response)=>{
-
-                            })
-                    }
+                        })
 
                 }
-                )
-        ]
-        )
+                //start if roles
+                then((response) => {
+                    if (response.chooseAdd === "Roles") {
+                        inquirer
+                            .prompt({
+                                type: "input",
+                                message: "Enter New Role Title",
+                                name: "roleName"
+                            }, 
+                            {
+                                type: "input",
+                                message: "Please put in the new salery",
+                                name: "newSalery"
+                            },
+                            {
+                                type: "input",
+                                message:"Please put in the new department",
+                                name: "newDepartment"
+                            },
+                            )
+                            .then((response)=>{
+                                connection.query(`Insert into role VALUE ${response.newDepartment}, ${response.newSalery}, ${response.roleName} `, (err, res)=> {
+                                    if (err) throw err;
+                                    connection.query("SELECT * FROM departent", (err, res)=> {
+                                        if (err) throw err;
+                                        startApp()
+                                    })
+                                })
+                            })
+                            }}
+                            .then((response)=>{
+                                if 
+                            })
+            }
+            )
+    }
 }
+
+
+
+
+
+
 //         {
 //             type: input,
 //             name: first_name,
@@ -103,5 +196,3 @@ const startApp = () => {
 //             name: last_name,
 //             message: "What is the employee's last name?"
 //         },
-// ])}
-//     //.then
