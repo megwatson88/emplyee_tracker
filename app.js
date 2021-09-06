@@ -96,10 +96,10 @@ const startApp = () => {
                             message: "Enter Department Name",
                             name: "departmentName"
                         })
-                        .then((response)=>{
-                            connection.query(`Insert into department VALUE ${response.departmentName}`, (err, res)=> {
+                        .then((response) => {
+                            connection.query(`Insert into department VALUE ${response.departmentName}`, (err, res) => {
                                 if (err) throw err;
-                                connection.query("SELECT * FROM departent", (err, res)=> {
+                                connection.query("SELECT * FROM departent", (err, res) => {
                                     if (err) throw err;
                                     startApp()
                                 })
@@ -115,31 +115,29 @@ const startApp = () => {
                                 type: "input",
                                 message: "Enter New Role Title",
                                 name: "roleName"
-                            }, 
-                            {
-                                type: "input",
-                                message: "Please put in the new salery",
-                                name: "newSalery"
                             },
-                            {
-                                type: "input",
-                                message:"Please put in the new department",
-                                name: "newDepartment"
-                            },
+                                {
+                                    type: "input",
+                                    message: "Please put in the new salery",
+                                    name: "newSalery"
+                                },
+                                {
+                                    type: "input",
+                                    message: "Please put in the new department",
+                                    name: "newDepartment"
+                                },
                             )
-                            .then((response)=>{
-                                connection.query(`Insert into role VALUE ${response.newDepartment}, ${response.newSalery}, ${response.roleName} `, (err, res)=> {
+                            .then((response) => {
+                                connection.query(`Insert into role VALUE ${response.newDepartment}, ${response.newSalery}, ${response.roleName} `, (err, res) => {
                                     if (err) throw err;
-                                    connection.query("SELECT * FROM departent", (err, res)=> {
+                                    connection.query("SELECT * FROM departent", (err, res) => {
                                         if (err) throw err;
                                         startApp()
                                     })
                                 })
                             })
-                            }}
-                            .then((response)=>{
-                                if 
-                            })
+                    }
+                }
             }
             )
     }
