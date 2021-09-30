@@ -1,19 +1,18 @@
+//creating the dependancies 
 const express = require('express');
 const inquirer = require('inquirer');
 const mysql2 = require('mysql2');
 const { response } = require('express');
-
-
-
+//setting port 
 const PORT = process.env.PORT || 3001
 const app = express();
 
 const db = mysql2.createConnection(
     {
         host: 'localhost',
-        // MySQL username,
+
         user: 'root',
-        // {TODO: Add your MySQL password}
+
         password: '',
         database: 'employees_db'
     },
@@ -27,12 +26,7 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-//test 
-// app.get('/', (req, res)=>{
-//     res.json({
-//         message: 'hello world'
-//     });
-// });
+
 
 
 // inquirer employee questions
@@ -147,7 +141,7 @@ const startApp = () => {
                                         })
                                     })
                                 })
-                        }
+                        };
                         if (response.chooseAdd === "Employee") {
                             inquirer
                                 .prompt[
@@ -192,16 +186,37 @@ const startApp = () => {
                                     type: input,
                                     name: last_name,
                                     message: "What is the employee's last name?"
-                                },
-                                    
+                                }
+
                             ]
                         }
 
-                        
+
+                    }
                     )
+            };
+            if (response.chooseAction === "Update") {
+                inquirer
+                    .prompt({
+                        name: "update",
+                        type: "list",
+                        choices: ["Employee", "Role", "Manager"],
+                        message: "What would you like to update?"
+                    })
+                    .then((response) => {
+                        connection.query(`Insert into department VALUE ${response.update}`, (err, res) => {
+                            if (err) throw err;
+                            connection.query("SELECT * FROM departent", (err, res) => {
+                                if (err) throw err;
+                                startApp()
+                            })
+                        })
+
+                    })
             }
-        })
-}
+        }
+
+,)};
 
 startApp();
 
