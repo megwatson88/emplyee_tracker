@@ -3,6 +3,7 @@ const express = require('express');
 const inquirer = require('inquirer');
 const mysql2 = require('mysql2');
 
+
 //setting port 
 const PORT = process.env.PORT || 3001
 const app = express();
@@ -21,16 +22,11 @@ const db = mysql2.createConnection(
 //express middlewear 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-
-
-
 // inquirer employee questions
-
 
 const startApp = () => {
     inquirer
@@ -56,7 +52,7 @@ const startApp = () => {
                     //departments
                     .then((response) => {
                         if (response.pickedView === "Departments") {
-                            connection.Query("SELECT * FROM department", (err, res) => {
+                            connection.Query("SELECT * FROM department;", (err, res) => {
                                 if (err) throw err;
                                 console.table(res);
                                 startApp()
