@@ -2,41 +2,72 @@
 const express = require('express');
 const inquirer = require('inquirer');
 const mysql2 = require('mysql2');
+const db = require("./db");
+
 
 
 //setting port 
 const PORT = process.env.PORT || 3001
 const app = express();
 
-const db = mysql2.createConnection(
-    {
-        host: 'localhost',
 
-        user: 'root',
-
-        password: '',
-        database: 'employees_db'
-    },
-    console.log(`Connected to the inventory_db database.`)
-);
 //express middlewear 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-
-// inquirer employee questions
+function beginingQuestions() {
+    prompt([
+        {
+            type: "list",
+            message: "Welcome to your employee tracking system! Would you like to VIEW, ADD or UPDATE an employee?",
+            ame: "chooseAction",
+            choices: [
+                {
+                    name: "VIEW Employees", 
+                    value: "VIEW_EMPLOYEES"
+                },
+                {
+                    name: "VIEW Employees by department", 
+                    value: "VIEW_EMPLOYEES_By_Department"
+                },
+                {
+                    name: "VIEW Employees by manager", 
+                    value: "VIEW_EMPLOYEES_By_Manager"
+                },
+                {
+                    name: "Add Employee", 
+                    value: "Add_Empoyees"
+                },
+                {
+                    name: "Delete Employee", 
+                    value: "Delete_Empoyees"
+                },
+                {
+                    name: "Update Employee role", 
+                    value: "Update_Empoyees_Role"
+                },
+                {
+                    name: "Update Employee Manager", 
+                    value: "Update_Empoyees_Manger"
+                },
+                {
+                    name: "Update Employee Deparment", 
+                    value: "Update_Empoyees_Department"
+                },
+                {
+                    name: "Update Employee role", 
+                    value: "Update_Empoyees_Role"
+                },
+            ]
+        }])
+}
 
 const startApp = () => {
     inquirer
         .prompt([
-            {
-                type: "list",
-                message: "Welcome to your employee tracking system! Would you like to VIEW, ADD or UPDATE an employee?",
-                choices: ["VIEW", "ADD", "UPDATE", "Delete"],
-                name: "chooseAction"
-            }
+            
         ])
         .then((response) => {
 
@@ -52,7 +83,7 @@ const startApp = () => {
                     //departments
                     .then((response) => {
                         if (response.pickedView === "Departments") {
-                            connection.Query("SELECT * FROM department;", (err, res) => {
+                            this.connection.promise().query("SELECT * FROM department;", (err, res) => {
                                 if (err) throw err;
                                 console.table(res);
                                 startApp()
@@ -62,7 +93,7 @@ const startApp = () => {
 
                 //roles 
                 if ((response.pickedView === "Roles")) {
-                    connection.Query("SELECT * FROM roles", (err, res) => {
+                    return this.connection.Query("SELECT * FROM roles", (err, res) => {
                         if (err) throw err;
                         console.table(res);
                         startApp()
@@ -71,7 +102,7 @@ const startApp = () => {
                 //where does connection come from check the acitivites. 
                 //employees
                 if (response.pickedView === "Employees") {
-                    connection.Query("SELECT * FROM employees", (err, res) => {
+                    return this.connection.Query("SELECT * FROM employees", (err, res) => {
                         if (err) throw err;
                         console.table(res);
                         startApp()
@@ -98,9 +129,9 @@ const startApp = () => {
                                     name: "departmentName"
                                 })
                                 .then((response) => {
-                                    connection.query(`Insert into department VALUE ${response.departmentName}`, (err, res) => {
+                                    return this.connection.query(`Insert into department VALUE ${response.departmentName}`, (err, res) => {
                                         if (err) throw err;
-                                        connection.query("SELECT * FROM departent", (err, res) => {
+                                        query("SELECT * FROM departent", (err, res) => {
                                             if (err) throw err;
                                             startApp()
                                         })
@@ -129,9 +160,9 @@ const startApp = () => {
                                     },
                                 )
                                 .then((response) => {
-                                    connection.query(`Insert into role VALUE ${response.newDepartment}, ${response.newSalery}, ${response.roleName} `, (err, res) => {
+                                    return this.connection.query(`Insert into role VALUE ${response.newDepartment}, ${response.newSalery}, ${response.roleName} `, (err, res) => {
                                         if (err) throw err;
-                                        connection.query("SELECT * FROM departent", (err, res) => {
+                                        return this.connection.query("SELECT * FROM departent", (err, res) => {
                                             if (err) throw err;
                                             startApp()
                                         })
@@ -200,7 +231,7 @@ const startApp = () => {
                         message: "What would you like to update?"
                     })
                     .then((response) => {
-                        connection.query(`Insert into department VALUE ${response.update}`, (err, res) => {
+                        return this.connection.query(`Insert into department VALUE ${response.update}`, (err, res) => {
                             if (err) throw err;
                             connection.query("SELECT * FROM departent", (err, res) => {
                                 if (err) throw err;
@@ -212,7 +243,12 @@ const startApp = () => {
             }
         }
 
-,)};
+,)
+};
 
 startApp();
 
+function end() {
+    console.log("Thank you, goodbye!")
+    process.exit();
+}
