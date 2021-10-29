@@ -19,6 +19,10 @@ class DB {
     findAllDepartments(){
         return this.connection.promise().query('SELECT * FROM department');
     }
+    findEmployeesAllByDepartment(department_id){
+        return this.connection.promise().query('SELECT * FROM employee WHERE department_id = ?', department_id);
+    }
+    
 }
 
 module.exports = new DB(connection);
