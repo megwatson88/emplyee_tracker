@@ -1,8 +1,8 @@
 //creating the dependancies 
 const express = require('express');
 const inquirer = require('inquirer');
-const mysql2 = require('mysql2');
-const db = require("./db");
+// const mysql2 = require('mysql2');
+const db = require("./db/connection");
 
 
 
@@ -17,57 +17,93 @@ app.use(express.json());
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-function beginingQuestions() {
-    prompt([
-        {
-            type: "list",
-            message: "Welcome to your employee tracking system! Would you like to VIEW, ADD or UPDATE an employee?",
-            ame: "chooseAction",
-            choices: [
-                {
-                    name: "VIEW Employees", 
-                    value: "VIEW_EMPLOYEES"
-                },
-                {
-                    name: "VIEW Employees by department", 
-                    value: "VIEW_EMPLOYEES_By_Department"
-                },
-                {
-                    name: "VIEW Employees by manager", 
-                    value: "VIEW_EMPLOYEES_By_Manager"
-                },
-                {
-                    name: "Add Employee", 
-                    value: "Add_Empoyees"
-                },
-                {
-                    name: "Delete Employee", 
-                    value: "Delete_Empoyees"
-                },
-                {
-                    name: "Update Employee role", 
-                    value: "Update_Empoyees_Role"
-                },
-                {
-                    name: "Update Employee Manager", 
-                    value: "Update_Empoyees_Manger"
-                },
-                {
-                    name: "Update Employee Deparment", 
-                    value: "Update_Empoyees_Department"
-                },
-                {
-                    name: "Update Employee role", 
-                    value: "Update_Empoyees_Role"
-                },
-            ]
-        }])
+
+// db.query(`SELECT ? FROM ?`, ['title', 'role'], function(err, data) {
+//     if (err) return console.log(err);
+
+//     console.log(data);
+// });
+
+// const beginingQuestions = () => {
+//     inquirer
+//     .prompt([
+//         {
+//             type: "list",
+//             message: "Welcome to your employee tracking system! Would you like to VIEW, ADD or UPDATE an employee?",
+//             ame: "chooseAction",
+//             choices: [
+//                 {
+//                     name: `VIEW Employees`,
+//                     value: "VIEW_EMPLOYEES"
+//                 },
+//                 {
+//                     name: "VIEW Employees by department",
+//                     value: "VIEW_EMPLOYEES_By_Department"
+//                 },
+//                 {
+//                     name: "VIEW Employees by manager",
+//                     value: "VIEW_EMPLOYEES_By_Manager"
+//                 },
+//                 {
+//                     name: "Add Employee",
+//                     value: "Add_Empoyees"
+//                 },
+//                 {
+//                     name: "Delete Employee",
+//                     value: "Delete_Empoyees"
+//                 },
+//                 {
+//                     name: "Update Employee role",
+//                     value: "Update_Empoyees_Role"
+//                 },
+//                 {
+//                     name: "Update Employee Manager",
+//                     value: "Update_Empoyees_Manger"
+//                 },
+//                 {
+//                     name: "Update Employee Deparment",
+//                     value: "Update_Empoyees_Department"
+//                 },
+//                 {
+//                     name: "Update Employee role",
+//                     value: "Update_Empoyees_Role"
+//                 },
+//             ]
+//         }
+//     ])
+        // .then(res => {
+        //     var choice = res.choice;
+        //     switch (choice) {
+        //         case "VIEW_EMPLOYEES":
+        //             viewEmployees();
+        //             break;
+        //         case "VIEW_EMPLOYEES_By_Department":
+        //             viewEmployeesByDepartment();
+        //             break;
+        //         case "VIEW_EMPLOYEES_By_Manager":
+        //             viewEmployeesByManager();
+        //             break;
+        //         case "Add_Empoyees":
+        //                 addEmployees();
+        //                 break;
+        //     }
+        // })
+// }
+// beginingQuestions();
+function viewEmployees(){
+    db.findAllEmployees()
+    .then(([rows]) => {
+        let employee = rows;
+        console.log('----------');
+        console.table(employee)
+    })
+    .then(() => startBegingQuestions());
 }
 
 const startApp = () => {
     inquirer
         .prompt([
-            
+
         ])
         .then((response) => {
 
@@ -92,6 +128,7 @@ const startApp = () => {
                     });
 
                 //roles 
+
                 if ((response.pickedView === "Roles")) {
                     return this.connection.Query("SELECT * FROM roles", (err, res) => {
                         if (err) throw err;
@@ -252,3 +289,4 @@ function end() {
     console.log("Thank you, goodbye!")
     process.exit();
 }
+end()
