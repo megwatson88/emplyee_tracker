@@ -1,7 +1,6 @@
 //creating the dependancies 
 const express = require('express');
 const inquirer = require('inquirer');
-const mysql2 = require('mysql2');
 const db = require("./db/connection");
 const cTable = require('console.table');
 
@@ -113,7 +112,7 @@ function viewEmployees() {
         .then(([rows]) => {
             let employees = rows;
             console.table(employees);
-            start();
+            
         })
 }
 
