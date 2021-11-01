@@ -2,7 +2,7 @@
 const express = require('express');
 const inquirer = require('inquirer');
 const db = require("./db/connection");
-const cTable = require('console.table');
+require('console.table');
 
 //setting port 
 const PORT = process.env.PORT || 3001
@@ -78,7 +78,7 @@ function start() {
             )
 
 
-}
+        }
 start();
 
 function viewDepartment() {
@@ -104,6 +104,7 @@ function viewDepartment() {
             })
             .then(() => start());
         })
+        console.table(department);
     }
 
 
@@ -151,3 +152,4 @@ function addEmployee() {
             });
         })
 }
+
