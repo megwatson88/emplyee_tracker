@@ -2,13 +2,17 @@
 const express = require('express');
 const inquirer = require('inquirer');
 const db = require("./db/connection");
-require('console.table');
+const consoleTable = require('console.table');
 
 //setting port 
 const PORT = process.env.PORT || 3001
 const app = express();
 
-
+db.connect(err => {
+    if (err) throw err;
+    console.log("connected to database");
+    
+})
 //express middlewear 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -51,71 +55,50 @@ function start() {
                     },
 
                 ]
-            }]).then(res => {
-                let choices = res.choices;
-                switch (choices) {
-                    case "VIEW_DEPARTMENT":
-                        viewDepartment();
-                        break;
-                    case "VIEW_EMPLOYEES":
-                        viewEmployees();
-                        break;
-                    case "VIEW_ROLES":
-                        viewEmployees();
-                        break;
-                    case "ADD_EMPLOYEE":
-                        addEmployee();
-                        break;
-                    case "UPDATE_EMPLOYEE":
-                        updateEmployee();
-                        break;
-                    case "END":
-                        end();
-                        break;
-                }
             }
-
-            )
-
-
+        ]).then(res => {
+            let choices = res.choices;
+            switch (choices) {
+                case "VIEW_DEPARTMENT":
+                    viewDepartment();
+                    break;
+                case "VIEW_EMPLOYEES":
+                    viewEmployees();
+                    break;
+                case "VIEW_ROLES":
+                    viewEmployees();
+                    break;
+                case "ADD_EMPLOYEE":
+                    addEmployee();
+                    break;
+                case "UPDATE_EMPLOYEE":
+                    updateEmployee();
+                    break;
+                case "END":
+                    end();
+                    break;
+            }
         }
-start();
+        );
+}
+
 
 function viewDepartment() {
-    db.findAll()
-        .then(([rows])=> {
-            let department = rows.map(row => row.department_name);
-            const departmentChoices = department.map(({ id, name}) => ({
-                name: name,
-                value: id
-            }));
-            prompt ([
-                {
-                    type: "list",
-                    name: "department",
-                    message: "What department would you like to view?",
-                    choices: departmentChoices
-                }
-            ])
-            .then(res => db.findAllEmployeesByDepartment(res.department))
-            .then(([rows]) => {
-                let employees = rows;
-                console.table(employees);
-            })
-            .then(() => start());
-        })
-        console.table(department);
-    }
-
-
-function viewEmployees() {
-    db.findAll()
-        .then(([rows]) => {
-            let employees = rows;
-            console.table(employees);
-            
-        })
+    var query = "SELECT * FROM department";
+    db.query(query, function (err, res) {
+        console.log('=========');
+        console.table(res);
+        start();
+    })
 }
+function viewEmployees() {
+    var query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON employee.manager_id = manager.id";
+    db.query( query, function (err, res) {
+        console.log('=========');
+        console.table(res);
+        start();
+    })
+};
 
 function addEmployee() {
     inquirer
@@ -153,3 +136,4 @@ function addEmployee() {
         })
 }
 
+start();
