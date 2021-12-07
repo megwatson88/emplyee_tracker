@@ -11,9 +11,11 @@ run npm init -y
 run npm install 
 run npm start to start the app
 
-# Instalation 
+#  Installation 
+Please download the files and run program in terminal 
 
 # Screen Shot 
+<img src="assets/Screen Shot 2021-12-05 at 12.23.10 PM.png" alt="screenshot" />
 
 # Tasks Completed 
 <ul>
